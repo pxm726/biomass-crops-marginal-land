@@ -4,43 +4,76 @@ parameters <- list(
   timestep = 1.0,
   
   default_carbon_to_mass_factor <- 0.3, # Mg/ha / (mol/m^2)
-  base_utilization_rate_constant <- 1e-2, # optimize
-  base_utilization_km <- 0.1, # optimize
-  base_conductance <- 0.1, # optimize
+  base_utilization_rate_constant <- 0.02, # optimize
+  base_utilization_km <- 0.05, # optimize
+  base_conductance <- 0.03, # optimize
   # Parameters related to the UTR model
   Leaf_carbon_to_mass_factor = default_carbon_to_mass_factor, 
   Leaf_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize
-  Leaf_utilization_km = 1.0 * base_utilization_km, # optimize
+  Leaf_utilization_km = 0.5 * base_utilization_km, # optimize
   Leaf_respiration_factor = 0.0,				# Leaf respiration is accounted for
+  # storage
+  Leaf_storage_to_substrate_rate_max = 0.0,     
+  Leaf_storage_to_substrate_a = 0.0,
+  Leaf_storage_to_substrate_b = 0.0,
+  Leaf_substrate_to_storage_rate_max = 0.0,     
+  Leaf_substrate_to_storage_a = 0.0,
+  Leaf_substrate_to_storage_b = 0.0,
+  
+  
   # by the canopy photosynthesis module
   Stem_carbon_to_mass_factor = default_carbon_to_mass_factor, 
-  Stem_utilization_rate_constant = 1.5 * base_utilization_rate_constant, # optimize
-  Stem_utilization_km = 1.0 * base_utilization_km, # optimize
+  Stem_utilization_rate_constant = 2 * base_utilization_rate_constant, # optimize
+  Stem_utilization_km = 0.1 * base_utilization_km, # optimize
   Stem_respiration_factor = 0.02, # optimize
+  
+  # storage
+  Stem_storage_to_substrate_rate_max = 0.0,     
+  Stem_storage_to_substrate_a = 0.0,
+  Stem_storage_to_substrate_b = 0.0,
+  Stem_substrate_to_storage_rate_max = 0.0,     
+  Stem_substrate_to_storage_a = 0.0,
+  Stem_substrate_to_storage_b = 0.0,
   
   Root_carbon_to_mass_factor = default_carbon_to_mass_factor, # optimize
   Root_utilization_rate_constant = 0.2 * base_utilization_rate_constant, # optimize
   Root_utilization_km = 0.5 * base_utilization_km, # optimize
   Root_respiration_factor = 0.03,
   
+  # storage
+  Root_storage_to_substrate_rate_max = 0.0,     
+  Root_storage_to_substrate_a = 0.0,
+  Root_storage_to_substrate_b = 0.0,
+  Root_substrate_to_storage_rate_max = 0.0,     
+  Root_substrate_to_storage_a = 0.0,
+  Root_substrate_to_storage_b = 0.0,
+  
   Rhizome_carbon_to_mass_factor = default_carbon_to_mass_factor,
   Rhizome_utilization_rate_constant = 0.1 * base_utilization_rate_constant, # optimize
-  Rhizome_utilization_km = 2.0 * base_utilization_km, # optimize
+  Rhizome_utilization_km = 2 * base_utilization_km, # optimize
   Rhizome_respiration_factor = 0.02,
   
-  substrate_conductance_Leaf_to_Stem = base_conductance,
-  substrate_conductance_Stem_to_Root = 0.4 * base_conductance, # optimize
-  substrate_conductance_Stem_to_Rhizome = 5*base_conductance, # optimize
+  # storage
+  Rhizome_storage_to_substrate_rate_max = 0.001,    # optimize 
+  Rhizome_storage_to_substrate_a = 0.5,           # optimize
+  Rhizome_storage_to_substrate_b = 10,            # optimize
+  Rhizome_substrate_to_storage_rate_max = 0.0001, # optimize    
+  Rhizome_substrate_to_storage_a = 0.2,           # optimize
+  Rhizome_substrate_to_storage_b = 40,            # optimize
+  
+  substrate_conductance_Leaf_to_Stem = 5 * base_conductance,
+  substrate_conductance_Stem_to_Root = 1.0 * base_conductance, # optimize
+  substrate_conductance_Stem_to_Rhizome = 1.0 * base_conductance, # optimize
    
   early_growth_end_dvi =                   0.3, # optimize
-  substrate_use_refill_ratio =             0.5, # optimize
+  substrate_use_refill_ratio =             0.1, # optimize
   
   transportation_beta_exponent = 1,
   
   # senescence_coefficient_logistic module
   Leaf_senescence_fraction_max =           0.0005, # optimize
   Stem_senescence_fraction_max =           0.0005, # optimize
-  Root_senescence_fraction_max =           0.0005,  # optimize
+  Root_senescence_fraction_max =           0, # 0.0005,  # optimize
   Rhizome_senescence_fraction_max  =       0.000, # optimize
   Leaf_senescence_alpha    =               1.0,   # optimize
   Stem_senescence_alpha    =               1.0,  # optimize
