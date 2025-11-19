@@ -49,8 +49,8 @@ initial_state <- list(
   Root_storage_carbon = stor_frac * Root / cf,
   Root_structural_carbon = struc_frac * Root / cf,
   
-  Rhizome_substrate_carbon = 0.2 * Rhizome / cf, # adjust
-  Rhizome_storage_carbon = 0.2 * Rhizome / cf, # adjust
-  Rhizome_structural_carbon = 0.6 * Rhizome / cf # adjust   
+  Rhizome_substrate_carbon = 0.05 * Rhizome / cf, # adjust
+  Rhizome_storage_carbon = 0.1 * Rhizome / cf, # adjust
+  Rhizome_structural_carbon = 0.85 * Rhizome / cf # adjust   
 )
 

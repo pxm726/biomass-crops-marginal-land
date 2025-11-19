@@ -86,7 +86,7 @@ concentrations <- with(result[[1]], data.frame(
   Stem = Stem_substrate_carbon/Stem_structural_carbon,
   Root = Root_substrate_carbon/Root_structural_carbon,
   Rhizome = Rhizome_substrate_carbon/Rhizome_structural_carbon,
-  Rhizome_storage = (Rhizome_substrate_carbon+Rhizome_storage_carbon)/Rhizome_structural_carbon
+  Rhizome_storage = Rhizome_storage_carbon/Rhizome_structural_carbon
 ))
 
 xyplot(data=concentrations, 
@@ -134,10 +134,6 @@ xyplot(data=result[[1]],
          doy, auto.key=TRUE)
 
 xyplot(data=result[[1]], 
-       Rhizome_substrate_carbon/Rhizome~
-         doy, auto.key=TRUE)
-
-xyplot(data=result[[1]], 
          substrate_transport_Stem_to_Rhizome+
          Rhizome_storage_to_substrate_rate +
          Rhizome_utilization_rate~
@@ -154,6 +150,18 @@ xyplot(data=result[[1]],
 xyplot(data=result[[1]],
        Stem_utilization_rate/Stem_structural_carbon
        ~doy, auto.key=TRUE)
+
+# Check Leaf balance
+xyplot(data=result[[1]],
+       canopy_assimilation_rate+
+         Leaf_utilization_rate+
+         substrate_transport_Leaf_to_Stem
+       ~doy, auto.key=TRUE)
+xyplot(data=result[[1]],
+       Leaf_utilization_rate/Leaf_structural_carbon
+       ~doy, auto.key=TRUE)
+
+xyplot(data=result[[1]], Rhizome_storage_to_substrate_rate~doy)
 
 source("plot_single_site.R")
 #avg of 2006-2008
