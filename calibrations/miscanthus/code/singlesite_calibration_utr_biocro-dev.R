@@ -51,34 +51,15 @@ for (i in 1:length(years)){
   growing_season_weather = weather_all[weather_all$year == year_i,]
   growing_season_weather =  growing_season_weather[growing_season_weather$doy>=106 &
                                                     growing_season_weather$doy<=350,]
-  
-  
-  
+
   result[[i]] <- run_biocro(initial_values =  miscanthus_giganteus_initial_state,
                        parameters = miscanthus_giganteus_utr_parameters,
                        drivers = growing_season_weather,
                        direct_module_names = miscanthus_giganteus_direct_utr_modules,
-                       differential_module_names = miscanthus_giganteus_differential_utr_modules, 
+                       differential_module_names = miscanthus_giganteus_differential_utr_modules,
                        ode_solver = BioCro::default_ode_solvers$boost_rkck54,verbose = FALSE)
-  
-  
-  ##########################################################################################
-  # Correcting for winter loss of atem based on 0.07 tons/ha per day
-  # non_frost_weather <- get_growing_season_climate(growing_season_weather, threshold_temperature = 0)
-  # 
-  # for ( j in dim(non_frost_weather)[1]: (dim(growing_season_weather)[1])){
-  #   result[[i]]$Stem[j] = result[[i]]$Stem[j] - (0.07/24)*(j- dim(non_frost_weather)[1])
-  # }
-  ########################################################################################
 }
-
 library(lattice)
-xyplot(data=result[[1]], canopy_assimilation_rate~time)
-xyplot(data=result[[1]], DVI~doy)
-xyplot(data=result[[1]], DVI~TTc)
-xyplot(data=result[[1]], TTc~time)
-# xyplot(data=result[[1]], Leaf_senescence_loss~time)
-
 # plot the substrate/storage C "concentrations"
 concentrations <- with(result[[1]], data.frame(
   doy = doy,
@@ -92,6 +73,15 @@ concentrations <- with(result[[1]], data.frame(
 xyplot(data=concentrations, 
        Leaf + Stem + Root + Rhizome + Rhizome_storage ~ doy, 
        ylab = "Substrate C: Structural C",
+       auto.key = TRUE)
+
+xyplot(data=result[[1]], 
+       Leaf_substrate_carbon + 
+         Stem_substrate_carbon + 
+         Root_substrate_carbon + 
+         Rhizome_substrate_carbon + 
+         Rhizome_storage_carbon ~ doy, 
+       ylab = "Substrate C (mol C / m^2)",
        auto.key = TRUE)
 
 # plot the utilization rate compared to transport to check 

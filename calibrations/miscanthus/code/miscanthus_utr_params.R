@@ -4,9 +4,9 @@ parameters <- list(
   timestep = 1.0,
   
   default_carbon_to_mass_factor <- 0.3, # Mg/ha / (mol/m^2)
-  base_utilization_rate_constant <- 0.005, # optimize
-  base_utilization_km <- 0.05, # optimize
-  base_conductance <- 0.04, # optimize
+  base_utilization_rate_constant <- 0.01, # optimize
+  base_utilization_km <- 0.02, # optimize
+  base_conductance <- 0.1, # optimize
   # Parameters related to the UTR model
   Leaf_carbon_to_mass_factor = default_carbon_to_mass_factor, 
   Leaf_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize
@@ -23,8 +23,8 @@ parameters <- list(
   
   # by the canopy photosynthesis module
   Stem_carbon_to_mass_factor = default_carbon_to_mass_factor, 
-  Stem_utilization_rate_constant = 2.0 * base_utilization_rate_constant, # optimize
-  Stem_utilization_km = 0.2 * base_utilization_km, # optimize
+  Stem_utilization_rate_constant = 1.05 * base_utilization_rate_constant, # optimize
+  Stem_utilization_km = 0.01 * base_utilization_km, # optimize
   Stem_respiration_factor = 0.02, # optimize
   
   # storage
@@ -49,21 +49,21 @@ parameters <- list(
   Root_substrate_to_storage_b = 0.0,
   
   Rhizome_carbon_to_mass_factor = default_carbon_to_mass_factor,
-  Rhizome_utilization_rate_constant = 0.05 * base_utilization_rate_constant, # optimize
-  Rhizome_utilization_km = 4 * base_utilization_km, # optimize
+  Rhizome_utilization_rate_constant = 0.01 * base_utilization_rate_constant, # optimize
+  Rhizome_utilization_km = 10 * base_utilization_km, # optimize
   Rhizome_respiration_factor = 0.02,
   
   # storage
   Rhizome_storage_to_substrate_rate_max = 0.005,  # optimize 
-  Rhizome_storage_to_substrate_a = 0.5,           # optimize
+  Rhizome_storage_to_substrate_a = 0.2,           # optimize
   Rhizome_storage_to_substrate_b = 10,            # optimize
   Rhizome_substrate_to_storage_rate_max = 0.001, # optimize    
   Rhizome_substrate_to_storage_a = 0.2,           # optimize
   Rhizome_substrate_to_storage_b = 40,            # optimize
   
-  substrate_conductance_Leaf_to_Stem = 3.0 * base_conductance,
-  substrate_conductance_Stem_to_Root = 1.0 * base_conductance, # optimize
-  substrate_conductance_Stem_to_Rhizome = 3.0 * base_conductance, # optimize
+  substrate_conductance_Leaf_to_Stem = 10.0 * base_conductance,
+  substrate_conductance_Stem_to_Root = 3.0 * base_conductance, # optimize
+  substrate_conductance_Stem_to_Rhizome = 5.0 * base_conductance, # optimize
    
   early_growth_end_dvi =                   0.3, # optimize
   substrate_use_refill_ratio =             0.1, # optimize
