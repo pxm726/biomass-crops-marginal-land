@@ -4,13 +4,13 @@ parameters <- list(
   timestep = 1.0,
   
   default_carbon_to_mass_factor <- 0.3, # Mg/ha / (mol/m^2)
-  base_utilization_rate_constant <- 0.01, # optimize
+  base_utilization_rate_constant <- 0.0075, # optimize
   base_utilization_km <- 0.02, # optimize
   base_conductance <- 0.1, # optimize
   # Parameters related to the UTR model
   Leaf_carbon_to_mass_factor = default_carbon_to_mass_factor, 
   Leaf_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize
-  Leaf_utilization_km = 0.5 * base_utilization_km, # optimize
+  Leaf_utilization_km = 1.0 * base_utilization_km, # optimize
   Leaf_respiration_factor = 0.0,				# Leaf respiration is accounted for
   # storage
   Leaf_storage_to_substrate_rate_max = 0.0,     
@@ -36,7 +36,7 @@ parameters <- list(
   Stem_substrate_to_storage_b = 0.0,
   
   Root_carbon_to_mass_factor = default_carbon_to_mass_factor, # optimize
-  Root_utilization_rate_constant = 0.2 * base_utilization_rate_constant, # optimize
+  Root_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize
   Root_utilization_km = 0.5 * base_utilization_km, # optimize
   Root_respiration_factor = 0.03,
   
@@ -54,7 +54,7 @@ parameters <- list(
   Rhizome_respiration_factor = 0.02,
   
   # storage
-  Rhizome_storage_to_substrate_rate_max = 0.005,  # optimize 
+  Rhizome_storage_to_substrate_rate_max = 0.003,  # optimize 
   Rhizome_storage_to_substrate_a = 0.2,           # optimize
   Rhizome_storage_to_substrate_b = 10,            # optimize
   Rhizome_substrate_to_storage_rate_max = 0.001, # optimize    
@@ -72,20 +72,20 @@ parameters <- list(
   
   # senescence_coefficient_logistic module
   Leaf_senescence_fraction_max =           0.0005, # optimize
-  Stem_senescence_fraction_max =           0.0005, # optimize
+  Stem_senescence_fraction_max =           0.0001, # optimize
   Root_senescence_fraction_max =           0, # 0.0005,  # optimize
   Rhizome_senescence_fraction_max  =       0.000, # optimize
   Leaf_senescence_alpha    =               1.0,   # optimize
-  Stem_senescence_alpha    =               1.0,  # optimize
+  Stem_senescence_alpha    =               0.5,  # optimize
   Root_senescence_alpha    =               0.5,    # optimize
   Rhizome_senescence_alpha     =           0.1, # optimize
   Leaf_senescence_beta     =               1.5, # optimize
-  Stem_senescence_beta     =               1.5, # optimize
+  Stem_senescence_beta     =               1.8, # optimize
   Root_senescence_beta     =               2.0, # optimize
   Rhizome_senescence_beta      =           1, # optimize
-  Leaf_senescence_reuse_factor =           0.5, # optimize
-  Stem_senescence_reuse_factor =           0.5, # optimize
-  Root_senescence_reuse_factor =           0.5, # optimize
+  Leaf_senescence_reuse_factor =           0.9, # optimize
+  Stem_senescence_reuse_factor =           0.9, # optimize
+  Root_senescence_reuse_factor =           0.9, # optimize
   Rhizome_senescence_reuse_factor =        0, # optimize
   
   
@@ -125,7 +125,7 @@ parameters <- list(
   
   # thermal_time_development_rate_calculator module
   sowing_fractional_doy =                  0      , # from miscanthus_x_giganteous.R, non-existing in yufeng's biomass-crops-marginal-land
-  TTemr =                                  300    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
+  TTemr =                                  400    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTveg =                                  1600   ,  # GGD6 = 2200, Assume it is stem elongation. Tejera & Heaton 2019; 900 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTrep =                                  400   , # GGD6 = 2600, Leaf growth stop, Tejera & Heaton 2019 # from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   
@@ -168,13 +168,13 @@ parameters <- list(
   
   # shortwave_atmospheric_scattering module
   atmospheric_pressure  =                  101325,
-  atmospheric_transmittance =              0.85,       # Campbell and Norman, An Introduction to Environmental Biophysics, 2nd Edition, Pg 173
+  atmospheric_transmittance =              0.6,       # Campbell and Norman, An Introduction to Environmental Biophysics, 2nd Edition, Pg 173
   atmospheric_scattering  =                0.3, 
   
   # ten_layer_canopy_properties module
   chil                        = 1,           # 1 in miscanthus_x_giganteous.R,  0.81, Campbell and Norman, An Introduction to Environmental Biophysics, 2nd Edition, Table 15.1, pg 253
-  k_diffuse                   = 0.7,         # Estimated from Campbell and Norman, An Introduction to Environmental Biophysics, 2nd Edition, Figure 15.4, pg 254 # 0.1
-  kpLN                        = 0,           # not used in Soybean-BioCro
+  k_diffuse                   = 0.1,         # Estimated from Campbell and Norman, An Introduction to Environmental Biophysics, 2nd Edition, Figure 15.4, pg 254 # 0.1
+  kpLN                        = 0.2,        
   leaf_reflectance_nir        = 0.38,        # Corn values from Table 7-1 from Norman & Arkebauer (1991) https://doi.org/10.2134/agronmonogr31.c7
   leaf_reflectance_par        = 0.09,        # Corn values from Table 7-1 from Norman & Arkebauer (1991) https://doi.org/10.2134/agronmonogr31.c7
   leaf_transmittance_nir      = 0.45,        # Corn values from Table 7-1 from Norman & Arkebauer (1991) https://doi.org/10.2134/agronmonogr31.c7
@@ -189,14 +189,14 @@ parameters <- list(
   electrons_per_oxygenation   = 5.25,        # Bernacchi et al. 2003 (https://doi.org/10.1046/j.0016-8025.2003.01050.x)
   tpu_rate_max                = 13,          # Fitted value based on the A-Ci data measured at UIUC in 2019-08 by Delgrado (unpublished data)
   RL_at_25                    = 1.28,        # Davey et al. 2004 (https://doi.org/10.1104/pp.103.030569), Table 3, cv Pana, co2 368 ppm # Renamed from `Rd`
-  Catm                        = 372.59,      # micromol / mol, CO2 level in 2002
+  Catm                        = 400,      # micromol / mol, CO2 level in 2002
   O2                          = 210,         # millimol / mol
   b0                          = 0.08,        # miscanthus_x_giganteus.R
   b1                          = 3,           # miscanthus_x_giganteus.R
   Gs_min                      = 1e-3,
   theta                       = 0.83,        # miscanthus_x_giganteous.R
   windspeed_height            = 10,
-  leafwidth                   = 0.1,         # Large mature leaflets can reach 10 cm in width
+  leafwidth                   = 0.04,       
   beta                        = 0.93,        # from miscanthus_x_giganteus.R in data file, no reference
   kparm                       = 0.7,         # from miscanthus_x_giganteus.R in data file, no reference
   lowerT                      = 3,           # from miscanthus_x_giganteus.R in data file, no reference, 10 in yufeng's biomass-crops-marginal-land setting
