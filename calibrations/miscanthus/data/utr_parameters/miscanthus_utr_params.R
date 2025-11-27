@@ -49,17 +49,17 @@ parameters <- list(
   Root_substrate_to_storage_b = 0.0,
   
   Rhizome_carbon_to_mass_factor = default_carbon_to_mass_factor,
-  Rhizome_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize 0.01
-  Rhizome_utilization_km = 1.0 * base_utilization_km, # optimize 10
+  Rhizome_utilization_rate_constant = 0.01 * base_utilization_rate_constant, # optimize 0.01
+  Rhizome_utilization_km = 10 * base_utilization_km, # optimize 10
   Rhizome_respiration_factor = 0.02,
   
   # storage
   Rhizome_storage_to_substrate_rate_max = 0.003,  # optimize 0.003
   Rhizome_storage_to_substrate_a = 0.2,           # optimize 0.2
   Rhizome_storage_to_substrate_b = 10,            # optimize 10
-  Rhizome_substrate_to_storage_rate_max = 0.2,  # optimize 0.001   
-  Rhizome_substrate_to_storage_a = 100,           # optimize 0.2
-  Rhizome_substrate_to_storage_b = 0.1,            # optimize 40
+  Rhizome_substrate_to_storage_rate_max = 0.001,  # optimize 0.001   
+  Rhizome_substrate_to_storage_a = 0.2,           # optimize 0.2
+  Rhizome_substrate_to_storage_b = 40,            # optimize 40
   
   substrate_conductance_Leaf_to_Stem = 10 * base_conductance, #10
   substrate_conductance_Stem_to_Root = 3 * base_conductance, # optimize 3.0
@@ -125,7 +125,7 @@ parameters <- list(
   
   # thermal_time_development_rate_calculator module
   sowing_fractional_doy =                  0      , # from miscanthus_x_giganteous.R, non-existing in yufeng's biomass-crops-marginal-land
-  TTemr =                                  600    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
+  TTemr =                                  400    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTveg =                                  1600   ,  # GGD6 = 2200, Assume it is stem elongation. Tejera & Heaton 2019; 900 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTrep =                                  400   , # GGD6 = 2600, Leaf growth stop, Tejera & Heaton 2019 # from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   

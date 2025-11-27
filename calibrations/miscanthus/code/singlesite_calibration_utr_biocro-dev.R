@@ -3,40 +3,9 @@ library(UTRMiscanthusBML)
 # Adapted from Yufeng He: Dec 12, 2022 by Ximin on Sep 24, 2025
 
 # parameters and weather inputs
-
-load("../data//parameters/miscanthus_giganteus_initial_state.rdata")
-load("../data//parameters/miscanthus_giganteus_logistic_parameters.rdata")
-load("../data//parameters/miscanthus_giganteus_ss_logistic_modules.rdata")
-load("../data//parameters/miscanthus_giganteus_deriv_logistic_modules.rdata")
 source('miscanthus_utr_params.R')
 source('miscanthus_utr_initial_values.R')
-
-miscanthus_giganteus_direct_utr_modules <- c("BioCro:stomata_water_stress_linear",
-                                             "BioCro:leaf_water_stress_exponential",
-                                             "UTRMiscanthusBML:lai_from_structural_carbon",
-                                             #"BioCro:parameter_calculator",
-                                             "BioCro:solar_position_michalsky",
-                                             # "BioCro:shortwave_atmospheric_scattering", # replaced by c4_canopy
-                                             # "BioCro:incident_shortwave_from_ground_par", # replaced by c4_canopy
-                                             # "BioCro:ten_layer_canopy_properties", # replaced by c4_canopy
-                                             # "BioCro:ten_layer_c4_canopy", # replaced by c4_canopy
-                                             canopy_photosynthesis = "BioCro:c4_canopy",
-                                             "BioCro:stefan_boltzmann_longwave",
-                                             "BioCro:canopy_gbw_thornley",
-                                             "BioCro:height_from_lai",
-                                             # "BioCro:ten_layer_canopy_integrator", # replaced by c4_canopy
-                                             "BioCro:carbon_assimilation_to_biomass",
-                                             # "BioCro:thermal_time_development_rate_calculator",
-                                             "BioCro:development_index_from_thermal_time",
-                                             "UTRMiscanthusBML:thornley_utilization_calculator_lsrr",
-                                             "UTRMiscanthusBML:thornley_transport_calculator_lsrr",
-                                             "UTRMiscanthusBML:thornley_biomass_calculator_lsrr")
-
-miscanthus_giganteus_differential_utr_modules <- c("UTRMiscanthusBML:thornley_utilization_lsrr",
-                                                   "UTRMiscanthusBML:thornley_transport_lsrr",
-                                                   "BioCro:two_layer_soil_profile",
-                                                   # "BioCro:development_index",
-                                                   "BioCro:thermal_time_trilinear")
+source('miscanthus_utr_modules.R')
 
 miscanthus_giganteus_utr_parameters <- parameters
 miscanthus_giganteus_initial_state <- initial_state
@@ -72,7 +41,7 @@ if (examining_plots){
     Rhizome = Rhizome_substrate_carbon/Rhizome_structural_carbon,
     Rhizome_storage = Rhizome_storage_carbon/Rhizome_structural_carbon
   ))
-  xyplot(data=concentrations[1500:5880,], 
+  xyplot(data=concentrations,# [1500:5880,], 
          Leaf + Stem + Root + Rhizome + Rhizome_storage ~ doy, 
          ylab = "Substrate C: Structural C",
          auto.key = TRUE)
@@ -125,10 +94,14 @@ if (examining_plots){
            Rhizome_storage_carbon~
            doy, auto.key=TRUE)
   
-  xyplot(data=result[[1]], 
+  xyplot(data=result[[1]][1500:5880,], 
          substrate_transport_Stem_to_Rhizome+
            Rhizome_storage_to_substrate_rate +
            Rhizome_utilization_rate~
+           doy, auto.key=TRUE)
+  
+  xyplot(data=result[[1]][1300:5880,],
+           Rhizome_substrate_carbon~
            doy, auto.key=TRUE)
   
   # Check why stem has low substrate C
@@ -158,6 +131,8 @@ if (examining_plots){
          ~doy, auto.key=TRUE)
   
   xyplot(data=result[[1]], Rhizome_storage_to_substrate_rate~doy)
+  
+
 }
 
 
