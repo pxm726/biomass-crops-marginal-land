@@ -63,7 +63,8 @@ if (examining_plots){
   # 5. Is Rhizome growing at the end of the season?
   # 6. Do leaf and stem utilization max out, so more can be transported to Rhizome?
   xyplot(data=result[[1]], 
-         Leaf_utilization_rate+
+         canopy_assimilation_rate+
+           Leaf_utilization_rate+
            substrate_transport_Leaf_to_Stem+
            Stem_utilization_rate+
            substrate_transport_Stem_to_Rhizome+
@@ -131,6 +132,14 @@ if (examining_plots){
          ~doy, auto.key=TRUE)
   
   xyplot(data=result[[1]], Rhizome_storage_to_substrate_rate~doy)
+  
+  # Check the relationship between the substrate concentration and utilization rate
+  xyplot(data=result[[1]], Leaf_substrate_carbon/Leaf_structural_carbon/10+
+           Leaf_utilization_rate/Leaf_structural_carbon~time, auto.key=TRUE)
+  xyplot(data=result[[1]], Stem_substrate_carbon/Stem_structural_carbon+
+           Stem_utilization_rate/Stem_structural_carbon~time, 
+         ylim=c(-0.05, 0.05),
+         auto.key=TRUE)
   
 
 }

@@ -4,66 +4,56 @@ parameters <- list(
   timestep = 1.0,
   
   default_carbon_to_mass_factor <- 0.3, # Mg/ha / (mol/m^2)
-  base_utilization_rate_constant <- 0.0075, # optimize 0.0075
-  base_utilization_km <- 0.02, # optimize 0.02
+  base_utilization_rate_constant <- 0.2, # optimize 0.0075
+  base_utilization_km <- 0.002, # optimize 0.02
   base_conductance <- 0.1, # optimize 0.1
   # Parameters related to the UTR model
   Leaf_carbon_to_mass_factor = default_carbon_to_mass_factor, 
-  Leaf_utilization_rate_constant = 1.2 * base_utilization_rate_constant, # optimize 1.0
+  Leaf_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize 1.0
   Leaf_utilization_km = 2.2 * base_utilization_km, # optimize 1.0
   Leaf_respiration_factor = 0.0,				# Leaf respiration is accounted for
   # storage
   Leaf_storage_to_substrate_rate_max = 0.0,     
-  Leaf_storage_to_substrate_a = 0.0,
-  Leaf_storage_to_substrate_b = 0.0,
   Leaf_substrate_to_storage_rate_max = 0.0,     
-  Leaf_substrate_to_storage_a = 0.0,
-  Leaf_substrate_to_storage_b = 0.0,
   
   
   # by the canopy photosynthesis module
   Stem_carbon_to_mass_factor = default_carbon_to_mass_factor, 
-  Stem_utilization_rate_constant = 1.2 * base_utilization_rate_constant, # optimize 1.05
+  Stem_utilization_rate_constant = 1.1 * base_utilization_rate_constant, # optimize 1.05
   Stem_utilization_km = 0.5 * base_utilization_km, # optimize 0.01
   Stem_respiration_factor = 0.02, # optimize 0.02
   
   # storage
-  Stem_storage_to_substrate_rate_max = 0.0,     
-  Stem_storage_to_substrate_a = 0.0,
-  Stem_storage_to_substrate_b = 0.0,
+  Stem_storage_to_substrate_rate_max = 0.0,   
   Stem_substrate_to_storage_rate_max = 0.0,     
-  Stem_substrate_to_storage_a = 0.0,
-  Stem_substrate_to_storage_b = 0.0,
   
   Root_carbon_to_mass_factor = default_carbon_to_mass_factor, # optimize 1.0
-  Root_utilization_rate_constant = 1.2 * base_utilization_rate_constant, # optimize 1.0
-  Root_utilization_km = 1.0 * base_utilization_km, # optimize 0.5
+  Root_utilization_rate_constant = 1.3 * base_utilization_rate_constant, # optimize 1.0
+  Root_utilization_km = 2.0 * base_utilization_km, # optimize 0.5
   Root_respiration_factor = 0.03,
   
   # storage
   Root_storage_to_substrate_rate_max = 0.0,     
-  Root_storage_to_substrate_a = 0.0,
-  Root_storage_to_substrate_b = 0.0,
-  Root_substrate_to_storage_rate_max = 0.0,     
-  Root_substrate_to_storage_a = 0.0,
-  Root_substrate_to_storage_b = 0.0,
+  Root_substrate_to_storage_rate_max = 0.0,  
   
   Rhizome_carbon_to_mass_factor = default_carbon_to_mass_factor,
-  Rhizome_utilization_rate_constant = 1.0 * base_utilization_rate_constant, # optimize 0.01
-  Rhizome_utilization_km = 1.0 * base_utilization_km, # optimize 10
+  Rhizome_utilization_rate_constant = 0.9 * base_utilization_rate_constant, # optimize 0.01
+  Rhizome_utilization_km = 2.0 * base_utilization_km, # optimize 10
   Rhizome_respiration_factor = 0.02,
   
   # storage
-  Rhizome_storage_to_substrate_rate_max = 0.003,  # optimize 0.003
-  Rhizome_storage_to_substrate_a = 0.2,           # optimize 0.2
-  Rhizome_storage_to_substrate_b = 10,            # optimize 10
-  Rhizome_substrate_to_storage_rate_max = 0.2,  # optimize 0.001   
-  Rhizome_substrate_to_storage_a = 100,           # optimize 0.2
-  Rhizome_substrate_to_storage_b = 0.1,            # optimize 40
+  Rhizome_storage_to_substrate_rate_max = 0.005,  # optimize 0.003
+  Rhizome_substrate_to_storage_rate_max = 1.0,  # optimize 0.001   
   
-  substrate_conductance_Leaf_to_Stem = 10 * base_conductance, #10
-  substrate_conductance_Stem_to_Root = 3 * base_conductance, # optimize 3.0
-  substrate_conductance_Stem_to_Rhizome = 5.0 * base_conductance, # optimize 5.0
+  # storage-substrate conversion
+  storage_to_substrate_hill_coefficient = 1,
+  substrate_to_storage_hill_coefficient = 1.56,
+  storage_to_substrate_km = 0.01,
+  substrate_to_storage_km = 0.001,
+  
+  substrate_conductance_Leaf_to_Stem = 50 * base_conductance, #10
+  substrate_conductance_Stem_to_Root = 10 * base_conductance, # optimize 3.0
+  substrate_conductance_Stem_to_Rhizome = 20 * base_conductance, # optimize 5.0
   
   early_growth_end_dvi =                   0.3, # optimize 0.3
   substrate_use_refill_ratio =             0.1, # optimize 0.1
@@ -120,12 +110,11 @@ parameters <- list(
   soil_reflectance = 0.2,
   soil_transmission = 0.01,
   specific_heat_of_air=1010,
-  #  specific_heat = 1010,
   stefan_boltzman = 5.67e-8,
   
   # thermal_time_development_rate_calculator module
   sowing_fractional_doy =                  0      , # from miscanthus_x_giganteous.R, non-existing in yufeng's biomass-crops-marginal-land
-  TTemr =                                  600    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
+  TTemr =                                  400    ,  # Emergence, Tejera & Heaton 2019 ; 400 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTveg =                                  1600   ,  # GGD6 = 2200, Assume it is stem elongation. Tejera & Heaton 2019; 900 from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   TTrep =                                  400   , # GGD6 = 2600, Leaf growth stop, Tejera & Heaton 2019 # from yufeng's biomass-crops-marginal-land, non existing in miscanthus_x_giganteous.R
   
