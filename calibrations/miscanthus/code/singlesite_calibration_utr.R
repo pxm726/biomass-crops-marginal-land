@@ -134,8 +134,8 @@ optim_cost_func <- function (params, partial_biocro_list, observed){
       error = function(e) { message("Worker error: ", e$message); NULL }
     )
     if (is.null(res) || dim(res)[1] < 5880) {
-      print(paste0('Result is Null?: ', is.null(res), '; Result run till timestep ', dim(res)[1]))
-      flush.console()
+      # print(paste0('Result is Null?: ', is.null(res), '; Result run till timestep ', dim(res)[1]))
+      # flush.console()
       return(1e5)
     }
     predicted$stem    = predicted$stem    + res$Stem[time_ind]
@@ -172,10 +172,10 @@ optim_cost_func <- function (params, partial_biocro_list, observed){
   # print(paste0('Root Error: ', rootE))
   
   if(is.na(E)) {
-    print(params)
+    # print(params)
     E=1e5
   }
-  print(E)
+  # print(E)
   return(E)
 }
 
