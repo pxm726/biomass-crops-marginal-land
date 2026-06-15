@@ -4,9 +4,6 @@ library(ncdf4)
 library(BioCroMis)
 library(lubridate)
 library(ggplot2)
-library(epiR)
-# library(sf)
-# library(raster)
 library(ggmap)
 
 run_cwrfsoilwater=TRUE
@@ -241,10 +238,11 @@ for (i in uniqueID){
   ii=ii+1
 }
 
-mean_rmse = rmse(observed,predicted) # 
-mean_ccc =  epi.ccc(observed,predicted)$rho.c$est  #
+# mean_rmse = rmse(observed,predicted) # 
+# mean_ccc =  epi.ccc(observed,predicted)$rho.c$est  #
 
-cc = cor(observed,predicted)
+cc_partitioning = cor(observed,predicted)
+print(cc_partitioning)
 
 slope_parameters  = lm(predicted~observed+0) # 
 meandataset = data.frame(obs=observed, pred = predicted, SE=obs_se, location=uniqueID)
@@ -261,4 +259,67 @@ actual_stem_comparison <- ggplot(data =  meandataset,aes(x = obs ,  y = pred))+
 
 # write.csv(meandataset, file="./multisite_validation_data_FigS3b.csv")
 plot(actual_stem_comparison)
-# ggsave(actual_stem_comparison, filename = "multisite_miscanthus_validation.png", dpi = 500, width =6.5, height =4.2)
+ggsave(actual_stem_comparison, filename = "multisite_miscanthus_validation.png", dpi = 500, width =6.5, height =4.2)
+
+
+
+# Create another plot
+plot_data <- multisite %>%
+  select(LocationID, age, biomass, predicted_stem_actual, measure_month) %>%
+  pivot_longer(cols = c(biomass, predicted_stem_actual),
+               names_to = "type", values_to = "value") %>%
+  mutate(
+    type = recode(type,
+                  "biomass" = "Measured",
+                  "predicted_stem_actual" = "Predicted"),
+    LocationID = factor(LocationID),
+    measure_month = factor(measure_month, levels = 1:12)  # force all 12 levels
+  )
+
+month_colors <- c(
+  "#2166AC", # Jan
+  "#4393C3", # Feb
+  "#74C476", # Mar
+  "#41AB5D", # Apr
+  "#006D2C", # May
+  "#FFEDA0", # Jun
+  "#FED976", # Jul
+  "#FEB24C", # Aug
+  "#F03B20", # Sep
+  "#BD0026", # Oct
+  "#6A0DAD", # Nov
+  "#08306B"  # Dec
+)
+present_months <- as.character(sort(unique(multisite$measure_month[!is.na(multisite$measure_month)])))
+
+ggplot(plot_data, aes(x = age, y = value, group = type, linetype = type)) +
+  geom_line(color = "grey50") +
+  geom_vline(xintercept = 7, color = "red", linetype = "solid")+
+  geom_point(
+    data = filter(plot_data, type == "Measured"),
+    aes(color = measure_month), size = 3
+  ) +
+  geom_point(
+    data = filter(plot_data, type == "Predicted"),
+    color = "grey30", size = 2
+  ) +
+  scale_linetype_manual(values = c("Measured" = "dotted", "Predicted" = "solid"),
+                        name = "Type") +
+  scale_color_manual(
+    values  = setNames(month_colors, as.character(1:12)),
+    limits  = as.character(1:12),
+    breaks  = present_months,
+    labels  = month.abb[as.numeric(present_months)],  # only labels for present months
+    name    = "Measure\nMonth"
+  ) +
+  scale_x_continuous(breaks = sort(unique(multisite$age)))+
+  facet_wrap(~ LocationID, labeller = label_both, scales = "free_y") +
+  labs(x = "Stand Age (years)", y = "Stem Biomass (Mg/ha)") +
+  theme_bw() +
+  theme(
+    panel.grid.minor.x = element_blank(),
+    strip.text      = element_text(size = 9, face = "bold"),
+    legend.position = "right",
+    axis.text       = element_text(size = 8),
+    panel.spacing   = unit(0.5, "lines")
+  )

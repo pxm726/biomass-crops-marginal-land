@@ -28,7 +28,7 @@ parameters <- list(
   Stem_substrate_to_storage_rate_max = 0.0,     
   
   Root_carbon_to_mass_factor = default_carbon_to_mass_factor, # optimize 1.0
-  Root_utilization_rate_constant = 1.3 * base_utilization_rate_constant, # optimize 1.0
+  Root_utilization_rate_constant = 1 * base_utilization_rate_constant, # optimize 1.0
   Root_utilization_km = 2.0 * base_utilization_km, # optimize 0.5
   Root_respiration_factor = 0.03,
   
@@ -37,26 +37,27 @@ parameters <- list(
   Root_substrate_to_storage_rate_max = 0.0,  
   
   Rhizome_carbon_to_mass_factor = default_carbon_to_mass_factor,
-  Rhizome_utilization_rate_constant = 0.9 * base_utilization_rate_constant, # optimize 0.01
+  Rhizome_utilization_rate_constant = 0.5 * base_utilization_rate_constant, # optimize 0.9
   Rhizome_utilization_km = 2.0 * base_utilization_km, # optimize 10
   Rhizome_respiration_factor = 0.02,
   
   # storage
   Rhizome_storage_to_substrate_rate_max = 0.005,  # optimize 0.003
   Rhizome_substrate_to_storage_rate_max = 1.0,  # optimize 0.001   
+  storage_release_threshold = 0.1,
   
   # storage-substrate conversion
   storage_to_substrate_hill_coefficient = 1,
   substrate_to_storage_hill_coefficient = 1.56,
   storage_to_substrate_km = 0.01,
-  substrate_to_storage_km = 0.001,
+  substrate_to_storage_km = 0.0001,
   
   substrate_conductance_Leaf_to_Stem = 50 * base_conductance, #10
-  substrate_conductance_Stem_to_Root = 10 * base_conductance, # optimize 3.0
-  substrate_conductance_Stem_to_Rhizome = 20 * base_conductance, # optimize 5.0
+  substrate_conductance_Stem_to_Rhizome = 30 * base_conductance, # optimize 3.0 # Stem_to_Root 10
+  substrate_conductance_Rhizome_to_Root = 20 * base_conductance, # optimize 5.0 # Stem_to_Rhizome 20
   
-  early_growth_end_dvi =                   0.3, # optimize 0.3
-  substrate_use_refill_ratio =             0.1, # optimize 0.1
+  # early_growth_end_dvi =                   0.3, # optimize 0.3
+  # substrate_use_refill_ratio =             0.1, # optimize 0.1
   
   transportation_beta_exponent = 1,
   

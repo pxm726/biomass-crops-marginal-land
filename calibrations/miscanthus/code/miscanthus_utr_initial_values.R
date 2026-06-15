@@ -3,15 +3,6 @@ cf <- 0.3   # [Mg/ha]/[mmol/m2] # from the optimized result
 subs_frac <- 0.045 # adjust
 stor_frac <- 0.005 # adjust
 struc_frac <- 0.95 # adjust
-# For the initial total seed mass per land area, we use the following equation:
-# Number of seeds per meter * weight per seed * 1 / row spacing
-#
-# Number of seeds per meter = 20 (Morgan et al., 2004, https://doi.org/10.1104/pp.104.043968)
-# weight per seed = 0.15 grams / seed (https://www.feedipedia.org/node/42, average of .12 to .18 grams)
-# row spacing = 0.38 meters (Morgan et al., 2004)
-#
-# (20 seeds / meter) * (0.15 grams / seed) * (1 / 0.38 meter) = 7.89 g / m^2 = 0.0789 Mg / ha
-# This value is used to determine the initial Leaf, Stem, and Root biomasses
 Leaf <- 1E-4
 Stem <- 1E-4
 Root <- 1E-4
@@ -49,8 +40,8 @@ initial_state <- list(
   Root_storage_carbon = stor_frac * Root / cf,
   Root_structural_carbon = struc_frac * Root / cf,
   
-  Rhizome_substrate_carbon = 0.1 * Rhizome / cf, # adjust
-  Rhizome_storage_carbon = 0.4 * Rhizome / cf, # adjust
-  Rhizome_structural_carbon = 0.5 * Rhizome / cf # adjust   
+  Rhizome_substrate_carbon = 0.1 * Rhizome / cf, # adjust 0.1
+  Rhizome_storage_carbon = 0.3 * Rhizome / cf, # adjust 0.4 / 0.15
+  Rhizome_structural_carbon = 0.6 * Rhizome / cf # adjust 0.5 / 0.75 
 )
 

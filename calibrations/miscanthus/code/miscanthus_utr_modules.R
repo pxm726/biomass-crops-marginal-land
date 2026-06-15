@@ -15,6 +15,7 @@ miscanthus_giganteus_direct_utr_modules <- c("BioCro:stomata_water_stress_linear
                                              "BioCro:carbon_assimilation_to_biomass",
                                              # "BioCro:thermal_time_development_rate_calculator",
                                              "BioCro:development_index_from_thermal_time",
+                                             "BioCro:format_time",
                                              "UTRMiscanthusBML:thornley_utilization_calculator_lsrr",
                                              "UTRMiscanthusBML:thornley_transport_calculator_lsrr",
                                              "UTRMiscanthusBML:thornley_biomass_calculator_lsrr")
