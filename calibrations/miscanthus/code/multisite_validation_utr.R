@@ -2,8 +2,9 @@
 
 library(ncdf4)
 # library(BioCroMis)
-library(BioCro) # added
-library(UTRMiscanthusBML) # added
+library(BioCro) 
+library(UTRMiscanthusBML) 
+library(BioCroWater)
 library(lubridate)
 library(ggplot2)
 library(dplyr)
@@ -50,9 +51,57 @@ nasa_path = "../data/weather_data_NASA_POWER/BioCro_input_NASA/"
 source('miscanthus_utr_params.R')
 source('miscanthus_utr_initial_values.R')
 source('miscanthus_utr_modules.R')
+# Parameter Optimization
+opt_params <- c('Leaf_utilization_rate_constant', # 1
+                'Stem_utilization_rate_constant', 
+                'Rhizome_utilization_rate_constant', 
+                'Root_utilization_rate_constant',
+                'Leaf_utilization_km', 
+                'Stem_utilization_km', # 6
+                'Rhizome_utilization_km', 
+                'Root_utilization_km', 
+                'Stem_respiration_factor', 
+                'Rhizome_respiration_factor', 
+                'Root_respiration_factor', # 11
+                'Rhizome_storage_to_substrate_rate_max', 
+                'Rhizome_substrate_to_storage_rate_max',
+                'storage_release_threshold', 
+                'storage_to_substrate_km', 
+                'substrate_to_storage_km', # 16
+                'substrate_conductance_Leaf_to_Stem', 
+                'substrate_conductance_Stem_to_Rhizome',
+                'substrate_conductance_Rhizome_to_Root',
+                'Leaf_senescence_fraction_max', 
+                'Stem_senescence_fraction_max', # 21
+                'Rhizome_senescence_fraction_max', 
+                'Root_senescence_fraction_max',
+                'Leaf_senescence_alpha', 
+                'Stem_senescence_alpha',
+                'Rhizome_senescence_alpha', # 26 
+                'Root_senescence_alpha',
+                'Leaf_senescence_beta', 
+                'Stem_senescence_beta', 
+                'Rhizome_senescence_beta', 
+                'Root_senescence_beta', # 31
+                'Leaf_senescence_reuse_factor',  
+                'Stem_senescence_reuse_factor',  
+                'Root_senescence_reuse_factor' 
+)
 
-miscanthus_giganteus_utr_parameters <- parameters
-initial_state <- initial_state
+output <- "0.445600    0.456183    0.222439    0.404927    0.006914    0.001473    0.004175    0.008541    0.016783    0.027012    0.051935    0.012635    1.767666    0.169505    0.003992    0.000147   14.517889    2.256671    3.387821    0.001486    0.000286    0.000000    0.000000    2.850732    0.907102    0.256907    0.810725    2.077753    3.113324    1.571546    5.302402    2.078172    0.443028    0.782029"
+test_params <- scan(text = output)
+parameters[opt_params] <- test_params
+
+
+# Set up BioCroWater
+source('set_up_BioCroWater.R')
+initial_values       <- set_init_values(initial_values)
+parameters           <- set_parameters(parameters)
+parameters$kd        <- parameters$k_diffuse
+direct_modules       <- set_direct_modules(miscanthus_giganteus_direct_utr_modules) 
+differential_modules <- set_differential_modules(miscanthus_giganteus_differential_utr_modules) 
+
+
 #################################COMMENT 1 ENDS #################################
 # experimental data
 multisite <- read.csv("../data/biomass_observation/Miscanthus_Observation_20230529.csv")
@@ -78,9 +127,9 @@ unique_IDs = unique(multisite$LocationID)
 ttc_scaling_factor_all=c()
 
 if(run_cwrfsoilwater){
-  miscanthus_giganteus_differential_utr_modules = miscanthus_giganteus_differential_utr_modules[-3] #remove two_layer_soil_profile
-  initial_state =
-    initial_state[names(initial_state)!=c('cws1', 'cws2')]
+  differential_modules = differential_modules[-3] #remove two_layer_soil_profile
+  initial_values =
+    initial_values[names(initial_values)!=c('cws1', 'cws2')]
 }
 
 rhizome_winter_loss = 0.34 # 34% rhizome dies during winter
@@ -138,23 +187,23 @@ for (i in 1:length(unique_IDs)){
       parameters$TTrep = parameters0$TTrep * ttc_scaling_factor
       ttc_scaling_factor_all = c(ttc_scaling_factor_all,ttc_scaling_factor)
       
-      initial_state$Rhizome_substrate_carbon  = 0.1 * initialRhizome / cf
-      initial_state$Rhizome_storage_carbon    = 0.3 * initialRhizome / cf
-      initial_state$Rhizome_structural_carbon = 0.6 * initialRhizome / cf 
+      initial_values$Rhizome_substrate_carbon  = 0.1 * initialRhizome / cf
+      initial_values$Rhizome_storage_carbon    = 0.3 * initialRhizome / cf
+      initial_values$Rhizome_structural_carbon = 0.6 * initialRhizome / cf 
       
       parameters$soil_depth  = site_i$bedrock[1]
       parameters$soil_depth2 = site_i$bedrock[1]/2
       parameters$soil_depth3 = site_i$bedrock[1]
       
       parameters$soil_type_indicator = site_i$biocro_soiltype[1] + 1 #  soil_data$soiltype[1] 
-      soil_params <- BioCro::soil_parameters[[parameters$soil_type_indicator]]
-      parameters[names(soil_params)] <- soil_params
+      # soil_params <- BioCro::soil_parameters[[parameters$soil_type_indicator]]
+      # parameters[names(soil_params)] <- soil_params
   
-      result <- run_biocro(initial_values =  initial_state,
+      result <- run_biocro(initial_values =  initial_values,
                            parameters = parameters, 
                            drivers = growing_season_weather,
-                           direct_module_names = miscanthus_giganteus_direct_utr_modules,
-                           differential_module_names = miscanthus_giganteus_differential_utr_modules,
+                           direct_module_names = direct_modules,
+                           differential_module_names = differential_modules,
                            ode_solver = BioCro::default_ode_solvers$boost_rkck54,verbose = FALSE)
       
       initialRhizome = result$Rhizome[dim(result)[1]] *(1-rhizome_winter_loss)

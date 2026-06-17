@@ -8,7 +8,7 @@ Stem <- 1E-4
 Root <- 1E-4
 Rhizome <- 24.1
 
-initial_state <- list(
+initial_values <- list(
   
   Leaf_respiration_loss = 0.0,
   Stem_respiration_loss = 0.0,

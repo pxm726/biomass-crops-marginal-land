@@ -1,5 +1,6 @@
 library(BioCro)
 library(UTRMiscanthusBML)
+library(BioCroWater)
 library(ggplot2)
 library(tidyr)
 library(lattice)
@@ -12,8 +13,14 @@ source('miscanthus_utr_params.R')
 source('miscanthus_utr_initial_values.R')
 source('miscanthus_utr_modules.R')
 
-miscanthus_giganteus_utr_parameters <- parameters
-miscanthus_giganteus_initial_state <- initial_values
+# Set up BioCroWater
+source('set_up_BioCroWater.R')
+initial_values       <- set_init_values(initial_values)
+parameters           <- set_parameters(parameters)
+parameters$kd        <- parameters$k_diffuse
+direct_modules       <- set_direct_modules(miscanthus_giganteus_direct_utr_modules) 
+differential_modules <- set_differential_modules(miscanthus_giganteus_differential_utr_modules) 
+
 
 # Parameter Optimization
 opt_params <- c('Leaf_utilization_rate_constant', # 1
@@ -55,7 +62,7 @@ opt_params <- c('Leaf_utilization_rate_constant', # 1
 test_params <- as.numeric(unlist(parameters[opt_params]))
 output <- "0.445600    0.456183    0.222439    0.404927    0.006914    0.001473    0.004175    0.008541    0.016783    0.027012    0.051935    0.012635    1.767666    0.169505    0.003992    0.000147   14.517889    2.256671    3.387821    0.001486    0.000286    0.000000    0.000000    2.850732    0.907102    0.256907    0.810725    2.077753    3.113324    1.571546    5.302402    2.078172    0.443028    0.782029"
 test_params <- scan(text = output)
-miscanthus_giganteus_utr_parameters[opt_params] <- test_params
+parameters[opt_params] <- test_params
 upperlim <- test_params * 3
 lowerlim <- test_params * 0.1
 
@@ -74,16 +81,17 @@ for (i in 1:length(years)){
   result[[i]] <- run_biocro(initial_values =  initial_values,
                        parameters = parameters,
                        drivers = growing_season_weather,
-                       direct_module_names = miscanthus_giganteus_direct_utr_modules,
-                       differential_module_names = miscanthus_giganteus_differential_utr_modules,
-                       ode_solver = BioCro::default_ode_solvers$boost_rkck54,verbose = FALSE)
+                       direct_module_names = direct_modules,
+                       differential_module_names = differential_modules,
+                       ode_solver = BioCro::default_ode_solvers$boost_rkck54,
+                       verbose = FALSE)
   
   partial_biocro_list[[i]] <- partial_run_biocro(
-    initial_values =  miscanthus_giganteus_initial_state,
-    parameters = miscanthus_giganteus_utr_parameters,
+    initial_values =  initial_values,
+    parameters = parameters,
     drivers = growing_season_weather,
-    direct_module_names = miscanthus_giganteus_direct_utr_modules,
-    differential_module_names = miscanthus_giganteus_differential_utr_modules,
+    direct_module_names = direct_modules,
+    differential_module_names = differential_modules,
     arg_names = opt_params,
     ode_solver= BioCro::default_ode_solvers$boost_rkck54,
     verbose = FALSE)
@@ -360,11 +368,11 @@ sink()
 # Stem_Respiration_Factor <- c()
 # Final_Yield_Average <- c()
 # for (i in 1:10){
-#   miscanthus_giganteus_utr_parameters$Stem_respiration_factor = 0.02 * i
+#   parameters$Stem_respiration_factor = 0.02 * i
 #   final_yield = 0
 #   for (i in 1:length(years)){
 #     result[[i]] <- run_biocro(initial_values =  miscanthus_giganteus_initial_state,
-#                               parameters = miscanthus_giganteus_utr_parameters,
+#                               parameters = parameters,
 #                               drivers = growing_season_weather,
 #                               direct_module_names = miscanthus_giganteus_direct_utr_modules,
 #                               differential_module_names = miscanthus_giganteus_differential_utr_modules,
@@ -373,8 +381,8 @@ sink()
 #     final_yield <- final_yield + result[[i]][final_idx, 'Leaf'] + result[[i]][final_idx, 'Stem']
 #   }
 #   final_yield_average <- final_yield / length(years)
-#   print(paste0(miscanthus_giganteus_utr_parameters$Stem_respiration_factor, " ", final_yield_average))
-#   Stem_Respiration_Factor <- c(Stem_Respiration_Factor, miscanthus_giganteus_utr_parameters$Stem_respiration_factor)
+#   print(paste0(parameters$Stem_respiration_factor, " ", final_yield_average))
+#   Stem_Respiration_Factor <- c(Stem_Respiration_Factor, parameters$Stem_respiration_factor)
 #   Final_Yield_Average <- c(Final_Yield_Average, final_yield_average)
 # }
 # 
@@ -406,11 +414,11 @@ sink()
 # Final_Yield_Average <- c()
 # for (i in 0:10){
 #   percentage_change <- (i-5) * 0.1
-#   miscanthus_giganteus_utr_parameters$Stem_utilization_rate_constant = 0.22 * (1 + percentage_change)
+#   parameters$Stem_utilization_rate_constant = 0.22 * (1 + percentage_change)
 #   final_yield = 0
 #   for (i in 1:length(years)){
 #     result[[i]] <- run_biocro(initial_values =  miscanthus_giganteus_initial_state,
-#                               parameters = miscanthus_giganteus_utr_parameters,
+#                               parameters = parameters,
 #                               drivers = growing_season_weather,
 #                               direct_module_names = miscanthus_giganteus_direct_utr_modules,
 #                               differential_module_names = miscanthus_giganteus_differential_utr_modules,
@@ -472,18 +480,18 @@ sink()
 # for (i in 1:10){
 #   # For respiration: use scaling factor i
 #   Respiration_Scaling_Factor <- c(Respiration_Scaling_Factor, i)
-#   miscanthus_giganteus_utr_parameters$Stem_utilization_rate_constant = 0.22
-#   miscanthus_giganteus_utr_parameters$Stem_respiration_factor = 0.02 * i
-#   final_yield_average_res <- calculate_final_yield_average(miscanthus_giganteus_utr_parameters)
+#   parameters$Stem_utilization_rate_constant = 0.22
+#   parameters$Stem_respiration_factor = 0.02 * i
+#   final_yield_average_res <- calculate_final_yield_average(parameters)
 #   print(paste0("Respiration scaling: ", i, " Yield: ", final_yield_average_res))
 #   Respiration_Yield_Average <- c(Respiration_Yield_Average, final_yield_average_res)
 #   
 #   # For utilization: use percentage change
 #   percentage_change <- (i-5) * 0.1
 #   Utilization_Percentage_Change <- c(Utilization_Percentage_Change, percentage_change * 100)
-#   miscanthus_giganteus_utr_parameters$Stem_respiration_factor = 0.02
-#   miscanthus_giganteus_utr_parameters$Stem_utilization_rate_constant = 0.22 * (1 + percentage_change)
-#   final_yield_average_utl <- calculate_final_yield_average(miscanthus_giganteus_utr_parameters)
+#   parameters$Stem_respiration_factor = 0.02
+#   parameters$Stem_utilization_rate_constant = 0.22 * (1 + percentage_change)
+#   final_yield_average_utl <- calculate_final_yield_average(parameters)
 #   print(paste0("Utilization % change: ", percentage_change * 100, " Yield: ", final_yield_average_utl))
 #   Utilization_Yield_Average <- c(Utilization_Yield_Average, final_yield_average_utl)
 # }

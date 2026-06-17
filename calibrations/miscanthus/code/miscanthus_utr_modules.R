@@ -2,6 +2,7 @@ miscanthus_giganteus_direct_utr_modules <- c("BioCro:stomata_water_stress_linear
                                              "BioCro:leaf_water_stress_exponential",
                                              "UTRMiscanthusBML:lai_from_structural_carbon",
                                              #"BioCro:parameter_calculator",
+                                             "BioCro:soil_evaporation",
                                              "BioCro:solar_position_michalsky",
                                              # "BioCro:shortwave_atmospheric_scattering", # replaced by c4_canopy
                                              # "BioCro:incident_shortwave_from_ground_par", # replaced by c4_canopy
