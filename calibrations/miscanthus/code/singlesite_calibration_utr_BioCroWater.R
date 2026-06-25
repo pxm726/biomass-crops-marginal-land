@@ -18,8 +18,8 @@ source('set_up_BioCroWater.R')
 initial_values       <- set_init_values(initial_values)
 parameters           <- set_parameters(parameters)
 parameters$kd        <- parameters$k_diffuse
-direct_modules       <- set_direct_modules(miscanthus_giganteus_direct_utr_modules) 
-differential_modules <- set_differential_modules(miscanthus_giganteus_differential_utr_modules) 
+direct_modules       <- set_direct_modules(miscanthus_giganteus_direct_utr_modules)
+differential_modules <- set_differential_modules(miscanthus_giganteus_differential_utr_modules)
 
 
 # Parameter Optimization
@@ -60,7 +60,9 @@ opt_params <- c('Leaf_utilization_rate_constant', # 1
 )
 
 test_params <- as.numeric(unlist(parameters[opt_params]))
-output <- "0.445600    0.456183    0.222439    0.404927    0.006914    0.001473    0.004175    0.008541    0.016783    0.027012    0.051935    0.012635    1.767666    0.169505    0.003992    0.000147   14.517889    2.256671    3.387821    0.001486    0.000286    0.000000    0.000000    2.850732    0.907102    0.256907    0.810725    2.077753    3.113324    1.571546    5.302402    2.078172    0.443028    0.782029"
+# output <- "0.445600    0.456183    0.222439    0.404927    0.006914    0.001473    0.004175    0.008541    0.016783    0.027012    0.051935    0.012635    1.767666    0.169505    0.003992    0.000147   14.517889    2.256671    3.387821    0.001486    0.000286    0.000000    0.000000    2.850732    0.907102    0.256907    0.810725    2.077753    3.113324    1.571546    5.302402    2.078172    0.443028    0.782029"
+output <- "1.246632    1.210328    0.322506    0.795737    0.007815    0.002295    0.002090    0.015567    0.020053    0.009943    0.057123    0.024649    3.018234    0.447075    0.004266    0.000128   35.237270    1.548220    1.694516    0.003466    0.000363    0.000000    0.000000    3.642354    1.417964    0.488303    1.565311    2.410469    4.045088    3.752724    8.310856    0.458472    0.464995    1.482957"
+
 test_params <- scan(text = output)
 parameters[opt_params] <- test_params
 upperlim <- test_params * 3
@@ -196,27 +198,27 @@ cost_func(test_params)
 # r <- partial_biocro_list[[1]](testing_params)
 # xyplot(data=r, Leaf+Stem+Root+Pod~fractional_doy)
 
-# maximum number of iterations
-max.iter <- 500
-
-set.seed(123)
-# Call DEoptim function to run optimization
-parVars <- c('cost_func', 'optim_cost_func','partial_biocro_list', 'observed_biomass')
-
-cl <- makeCluster(8)
-clusterExport(cl, parVars,envir=environment())
-sink(paste0('Optmization_output_utr_', Sys.Date(), '.txt'))
-optim_result<-DEoptim(fn=cost_func, lower=lowerlim, upper = upperlim, 
-                      control=list(VTR=10,
-                                   itermax=max.iter, 
-                                   parallelType=1,
-                                   packages=c('BioCro', 'UTRMiscanthusBML'),
-                                   parVar=parVars,cl=cl))
-
-opt_result <- data.frame(para=optim_result$par,MSE=optim_result$value)
-print(opt_result)
-sink()
-sink()
+# # maximum number of iterations
+# max.iter <- 500
+# 
+# set.seed(123)
+# # Call DEoptim function to run optimization
+# parVars <- c('cost_func', 'optim_cost_func','partial_biocro_list', 'observed_biomass')
+# 
+# cl <- makeCluster(8)
+# clusterExport(cl, parVars,envir=environment())
+# sink(paste0('Optmization_output_utr_', Sys.Date(), '.txt'))
+# optim_result<-DEoptim(fn=cost_func, lower=lowerlim, upper = upperlim, 
+#                       control=list(VTR=10,
+#                                    itermax=max.iter, 
+#                                    parallelType=1,
+#                                    packages=c('BioCro', 'UTRMiscanthusBML'),
+#                                    parVar=parVars,cl=cl))
+# 
+# opt_result <- data.frame(para=optim_result$par,MSE=optim_result$value)
+# print(opt_result)
+# sink()
+# sink()
 
 
 # examining_plots = TRUE

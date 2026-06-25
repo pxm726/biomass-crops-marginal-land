@@ -12,6 +12,7 @@ library(tidyr)
 library(ggmap)
 
 run_cwrfsoilwater=FALSE
+run_BioCroWater = TRUE
 
 ttc_function<-function(temp_array){
   tbase = 6 # originally 10
@@ -89,17 +90,25 @@ opt_params <- c('Leaf_utilization_rate_constant', # 1
 )
 
 output <- "0.445600    0.456183    0.222439    0.404927    0.006914    0.001473    0.004175    0.008541    0.016783    0.027012    0.051935    0.012635    1.767666    0.169505    0.003992    0.000147   14.517889    2.256671    3.387821    0.001486    0.000286    0.000000    0.000000    2.850732    0.907102    0.256907    0.810725    2.077753    3.113324    1.571546    5.302402    2.078172    0.443028    0.782029"
+# with BioCroWater
+output <- "1.246632    1.210328    0.322506    0.795737    0.007815    0.002295    0.002090    0.015567    0.020053    0.009943    0.057123    0.024649    3.018234    0.447075    0.004266    0.000128   35.237270    1.548220    1.694516    0.003466    0.000363    0.000000    0.000000    3.642354    1.417964    0.488303    1.565311    2.410469    4.045088    3.752724    8.310856    0.458472    0.464995    1.482957"
 test_params <- scan(text = output)
 parameters[opt_params] <- test_params
 
+direct_modules       <- miscanthus_giganteus_direct_utr_modules
+differential_modules <- miscanthus_giganteus_differential_utr_modules
 
-# Set up BioCroWater
-source('set_up_BioCroWater.R')
-initial_values       <- set_init_values(initial_values)
-parameters           <- set_parameters(parameters)
-parameters$kd        <- parameters$k_diffuse
-direct_modules       <- set_direct_modules(miscanthus_giganteus_direct_utr_modules) 
-differential_modules <- set_differential_modules(miscanthus_giganteus_differential_utr_modules) 
+
+if(run_BioCroWater){
+  # Set up BioCroWater
+  source('set_up_BioCroWater.R')
+  initial_values       <- set_init_values(initial_values)
+  parameters           <- set_parameters(parameters)
+  parameters$kd        <- parameters$k_diffuse
+  direct_modules       <- set_direct_modules(direct_modules) 
+  differential_modules <- set_differential_modules(differential_modules) 
+}
+
 
 
 #################################COMMENT 1 ENDS #################################
@@ -195,10 +204,19 @@ for (i in 1:length(unique_IDs)){
       parameters$soil_depth2 = site_i$bedrock[1]/2
       parameters$soil_depth3 = site_i$bedrock[1]
       
-      parameters$soil_type_indicator = site_i$biocro_soiltype[1] + 1 #  soil_data$soiltype[1] 
-      # soil_params <- BioCro::soil_parameters[[parameters$soil_type_indicator]]
-      # parameters[names(soil_params)] <- soil_params
-  
+      soil_type = site_i$biocro_soiltype[1] + 1
+      
+      if(run_BioCroWater){
+        parameters$soil_type_indicator_2 = soil_type #  soil_data$soiltype[1] 
+        parameters$soil_type_indicator_3 = soil_type #  soil_data$soiltype[1] 
+        parameters$soil_type_indicator_4 = soil_type #  soil_data$soiltype[1] 
+        parameters$soil_type_indicator_5 = soil_type 
+        parameters$soil_type_indicator_6 = soil_type 
+      } else{
+        parameters$soil_type_indicator <- soil_type
+        soil_params <- BioCro::soil_parameters[[parameters$soil_type_indicator]]
+        parameters[names(soil_params)] <- soil_params
+      }
       result <- run_biocro(initial_values =  initial_values,
                            parameters = parameters, 
                            drivers = growing_season_weather,
@@ -290,6 +308,10 @@ for (i in uniqueID){
 # mean_ccc =  epi.ccc(observed,predicted)$rho.c$est  #
 
 cc_utr = cor(observed,predicted)
+model <- lm(predicted ~ observed)
+r_squared <- summary(model)$r.squared
+print(r_squared)
+
 print(cc_utr)
 slope_parameters  = lm(predicted~observed+0) # 
 meandataset = data.frame(obs=observed, pred = predicted, SE=obs_se, location=uniqueID)
@@ -312,7 +334,7 @@ ggsave(actual_stem_comparison, filename = "utr_multisite_miscanthus_validation.p
 
 # Create another plot
 plot_data <- multisite %>%
-  select(LocationID, age, biomass, predicted_stem_actual, measure_month) %>%
+  dplyr::select(LocationID, age, biomass, predicted_stem_actual, measure_month) %>%
   pivot_longer(cols = c(biomass, predicted_stem_actual),
                names_to = "type", values_to = "value") %>%
   mutate(
